@@ -1,0 +1,49 @@
+# ─── SYSTEM / OS ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# ─── NODE / FRONTEND ──────────────────────────────────────────────────────────
+# Standard dependencies
+node_modules/
+dist/
+dist-ssr/
+
+# Vite 8 / Rolldown temporary files
+.vite/
+.rollup.cache/
+
+# Local environment files (contains secrets/keys)
+.env
+.env.local
+.env.*.local
+
+# ─── RUST / WASM ──────────────────────────────────────────────────────────────
+# Ignore the entire target directory (contains heavy .wasm and object files)
+target/
+
+# Cargo specific
+Cargo.lock
+**/*.rs.bk
+
+# Generated WASM glue and binaries
+# We ignore these because they should be regenerated via the build pipeline
+src/engine/friscy.js
+src/engine/friscy.wasm
+src/engine/friscy_core.wasm
+
+# ─── EMULATOR ASSETS ─────────────────────────────────────────────────────────
+# Ignore the 2GB root filesystem (fetch this via script/CDN instead)
+public/rootfs.tar
+public/*.iso
+public/*.img
+
+# ─── TOOLS / IDE ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Biome / Linting cache
+.biome_cache/

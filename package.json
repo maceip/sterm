@@ -1,0 +1,40 @@
+{
+  "name": "stare-term",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "node serve.js",
+    "lint": "biome check .",
+    "format": "biome format --write ."
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/addon-webgl": "^0.19.0",
+    "@xterm/xterm": "^5.3.0",
+    "comlink": "^4.4.1",
+    "jotai": "^2.10.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zustand": "^4.5.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@tailwindcss/vite": "^4.2.1",
+    "@vitejs/plugin-react": "^5.1.4",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "tailwindcss": "^4.2.1",
+    "vite": "^8.0.0-beta.15",
+    "vite-plugin-comlink": "^5.3.0"
+  },
+  "overrides": {
+    "vite-plugin-comlink": {
+      "vite": "$vite"
+    },
+    "@tailwindcss/vite": {
+      "vite": "$vite"
+    }
+  }
+}
