@@ -1,11 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --vanta-black: #020202; /* Total darkness */
-  --aeon-emerald: #00ff9d; /* High-contrast neon */
-  --industrial-grey: #1a1a1a;
-  --text-primary: #d4d4d4;
+  --stare-bg: #050607;
+  --stare-bg-elev: #0b0f13;
+  --stare-text: #e8edf2;
+  --stare-text-muted: #9aa6b2;
+  --stare-accent: #94f7c5;
+  --stare-selection: #2e9eff55;
+  --stare-shadow: 0 24px 64px rgba(0, 0, 0, 0.48);
 }
 
 * {
@@ -14,29 +17,56 @@
   box-sizing: border-box;
 }
 
-body {
-  background-color: var(--vanta-black);
-  color: var(--text-primary);
-  font-family: 'JetBrains Mono', monospace;
-  -webkit-font-smoothing: antialiased;
-  overflow: hidden; /* No scrollbars on the main surface */
-}
-
-/* Scrollbar styling for the "Industrial" look */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: var(--vanta-black);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--industrial-grey);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--aeon-emerald);
-}
-
+html,
+body,
 #root {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(148, 247, 197, 0.08), transparent 55%),
+    radial-gradient(900px 420px at 100% 0%, rgba(46, 158, 255, 0.08), transparent 45%),
+    var(--stare-bg);
+  color: var(--stare-text);
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #29323c;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3c4855;
+}
+
+.xterm {
+  font-variant-ligatures: contextual;
+}
+
+.xterm .xterm-viewport {
+  background: transparent !important;
+  scrollbar-color: #29323c transparent;
+}
+
+.xterm .xterm-screen canvas {
+  image-rendering: auto;
+}
+
+.xterm .xterm-selection div {
+  background-color: var(--stare-selection) !important;
 }

@@ -1,64 +1,91 @@
-import { useEffect, useRef, useMemo } from 'react';
-import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
-import { WebglAddon } from '@xterm/addon-webgl';
+import { Terminal } from '@xterm/xterm';
+import type { ITerminalOptions } from '@xterm/xterm';
+import { useEffect, useMemo, useRef } from 'react';
 
-// 2026 Elite Pattern: Scoped xterm packages + GPU context recovery
 import '@xterm/xterm/css/xterm.css';
 
-export const useTerminal = (options = {}) => {
+const DEFAULT_TERMINAL_OPTIONS: ITerminalOptions = {
+  allowProposedApi: true,
+  cursorBlink: true,
+  cursorStyle: 'bar',
+  cursorWidth: 2,
+  scrollback: 12000,
+  minimumContrastRatio: 4.5,
+  smoothScrollDuration: 80,
+  drawBoldTextInBrightColors: true,
+  fontFamily:
+    '"JetBrains Mono", "IBM Plex Mono", "Cascadia Code", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+  fontSize: 15,
+  fontWeight: '500',
+  fontWeightBold: '700',
+  letterSpacing: 0.2,
+  lineHeight: 1.22,
+  theme: {
+    background: '#050607',
+    foreground: '#e8edf2',
+    cursor: '#94f7c5',
+    cursorAccent: '#050607',
+    selectionBackground: '#2e9eff55',
+    selectionInactiveBackground: '#2e9eff33',
+    black: '#1a1f24',
+    red: '#ff5f73',
+    green: '#4ee38c',
+    yellow: '#ffd26e',
+    blue: '#57a9ff',
+    magenta: '#d18fff',
+    cyan: '#4ce5ff',
+    white: '#e8edf2',
+    brightBlack: '#6a7480',
+    brightRed: '#ff8b99',
+    brightGreen: '#7cffb0',
+    brightYellow: '#ffe59b',
+    brightBlue: '#89c6ff',
+    brightMagenta: '#e0b4ff',
+    brightCyan: '#83f1ff',
+    brightWhite: '#ffffff',
+  },
+};
+
+export const useTerminal = (options: ITerminalOptions = {}) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  // 1. Terminal instance is stabilized for the React Compiler.
-  // We use useMemo to ensure the instance isn't recreated on re-renders,
-  // which is crucial when managing 2GB of async data flow.
-  const term = useMemo(() => new Terminal({
-    cursorBlink: true,
-    allowProposedApi: true, // Required for advanced 2026 terminal features
-    scrollback: 10000,      // Keep buffer sane for 2GB RAM apps
-    ...options
-  }), []);
+  const optionsRef = useRef(options);
+
+  const term = useMemo(
+    () =>
+      new Terminal({
+        ...DEFAULT_TERMINAL_OPTIONS,
+        ...optionsRef.current,
+      }),
+    [],
+  );
 
   const fitAddon = useMemo(() => new FitAddon(), []);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // 2. Initial Setup
     term.open(containerRef.current);
     term.loadAddon(fitAddon);
 
-    // 3. WebGL Addon with Context Recovery
-    // In heavy WASM apps, the browser might drop the WebGL context to save RAM.
-    const webgl = new WebglAddon();
-    
-    webgl.onContextLoss(() => {
-      console.warn("Terminal WebGL context lost. Disposing addon to prevent leak.");
-      webgl.dispose();
-    });
-
-    try {
-      term.loadAddon(webgl);
-    } catch (e) {
-      console.warn("WebGL unavailable, falling back to Canvas renderer", e);
-    }
-
-    // 4. Industrial Resize Handling
     const resizeObserver = new ResizeObserver(() => {
-      // requestAnimationFrame prevents layout thrashing during heavy async updates
       requestAnimationFrame(() => fitAddon.fit());
     });
-    
+
     resizeObserver.observe(containerRef.current);
     fitAddon.fit();
 
-    // 5. Cleanup: Critical for >2GB apps to prevent memory fragmentation
+    if ('fonts' in document) {
+      void document.fonts.ready.then(() => {
+        requestAnimationFrame(() => fitAddon.fit());
+      });
+    }
+
     return () => {
       resizeObserver.disconnect();
-      webgl.dispose();
       term.dispose();
     };
-  }, [term, fitAddon]);
+  }, [fitAddon, term]);
 
   return { containerRef, term };
 };

@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { comlink } from 'vite-plugin-comlink';
 
 export default defineConfig({
+  envPrefix: ['VITE_', 'ANTHROPIC_', 'GEMINI_', 'GOOGLE_', 'OPENAI_'],
   plugins: [
     comlink(),
     tailwindcss(),
